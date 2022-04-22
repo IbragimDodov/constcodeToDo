@@ -2,3 +2,13 @@
   font-style: oblique;
   text-decoration: line-through;
 }
+
+.list-group-items-wrapper {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.dispNone {
+  visibility: hidden;
+}
