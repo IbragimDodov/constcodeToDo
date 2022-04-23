@@ -1,5 +1,6 @@
 class Application {
   constructor(param) {
+    const app = this;
     this.el = param.el;
 
     this.el.innerHTML = '';
@@ -18,14 +19,47 @@ class Application {
         this.update();
     })
 
+    panelElement.querySelector('[data-button="archive"]').addEventListener('click',
+      event =>  {
+        for(let item of this.list) {
+          if(item.selected) {
+            item.archived = true;
+            item.selected = false;
+          }
+        }
 
-    this.list = [
-      { id: 1, content: 'Купить хлеб', selected: true, done: false, archived: false },
-      { id: 2, content: 'Помыть машину', selected: true, done: false, archived: false },
-      { id: 3, content: 'Посмотреть JS', selected: false, done: false, archived: false },
-      { id: 4, content: 'Покодить', selected: false, done: true, archived: false },
-      { id: 5, content: 'Позвонить Маме', selected: false, done: true, archived: false }
-    ];
+        this.update();
+    })
+
+    this.el.querySelector('input').addEventListener('keydown', function(event) {
+      if (event.key !== 'Enter' || !this.value.trim()) {
+        return
+      }
+
+      const id = Math.max(0, ...app.list.map(x => x.id)) + 1;
+
+      app.list.push({
+        id, content: this.value.trim(), selected: false, done: false, archived: false
+      })
+      
+      app.list = app.list.sort((a,b) => b.id - a.id);
+
+      app.update();
+    })
+
+    if (localStorage.getItem("__TODO__APPLICATION__")) {
+      this.list = JSON.parse(localStorage.getItem("__TODO__APPLICATION__"));
+    } else {
+      this.list = []
+    }
+
+    // this.list = [
+    //   { id: 5, content: 'Позвонить Маме', selected: false, done: true, archived: false },
+    //   { id: 4, content: 'Покодить', selected: false, done: true, archived: false },
+    //   { id: 3, content: 'Посмотреть JS', selected: false, done: false, archived: false },
+    //   { id: 2, content: 'Помыть машину', selected: false, done: false, archived: false },
+    //   { id: 1, content: 'Купить хлеб', selected: false, done: false, archived: false }
+    // ];
 
     this.update()
   }
@@ -40,6 +74,9 @@ class Application {
 
   update() {
     const app = this;
+
+    localStorage.setItem("__TODO__APPLICATION__", JSON.stringify(this.list));
+
     const ulElement = this.el.querySelector('[data-items]');
     ulElement.innerHTML = '';
 
