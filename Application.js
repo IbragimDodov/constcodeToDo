@@ -36,6 +36,20 @@ class Application {
         return
       }
 
+      if (this.value === "Покажи все когда-либо бывшие задачи") {
+        app.list.forEach(item => item.archived = false);
+        this.value = '';
+        app.update();
+        return;
+      }
+      
+      if (this.value === "Удали все когда-либо бывшие задачи") {
+        app.list = this.items;
+        this.value = '';
+        app.update();
+        return;
+      }
+
       const id = Math.max(0, ...app.list.map(x => x.id)) + 1;
 
       app.list.push({
